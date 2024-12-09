@@ -1,10 +1,10 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
-const settings = require("electron-settings");
 
+// Store multiple file windows
 let mainWindow;
-let fileWindow;
+let fileWindows = [];
 
 app.whenReady().then(() => {
   createMainWindow();
@@ -16,18 +16,12 @@ function createMainWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      enableRemoteModule: true,
     },
   });
-  mainWindow.loadFile("index.html");
 
-  mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.executeJavaScript(`
-      const openFileButton = document.getElementById('open-file');
-      openFileButton.addEventListener('click', () => {
-        window.electronAPI.openFile();
-      });
-    `);
-  });
+  mainWindow.loadFile("index.html");
 }
 
 app.on("activate", () => {
@@ -52,68 +46,69 @@ ipcMain.handle("open-file", async () => {
   });
 
   if (canceled || filePaths.length === 0) return;
+
   const filePath = filePaths[0];
-  createTransparentWindow(filePath);
+  const fileExtension = path.extname(filePath).toLowerCase();
+  let fileContent;
+
+  if (fileExtension === ".pdf") {
+    fileContent = `file://${filePath}`;
+  } else if ([".jpg", ".png", ".gif"].includes(fileExtension)) {
+    fileContent = `data:image/${fileExtension.slice(1)};base64,${fs
+      .readFileSync(filePath)
+      .toString("base64")}`;
+  } else if ([".txt"].includes(fileExtension)) {
+    fileContent = fs.readFileSync(filePath, "utf-8");
+  } else {
+    fileContent = "Unsupported file type";
+  }
+
+  createFileWindow(fileContent, fileExtension);
 });
 
-function createTransparentWindow(filePath) {
-  const windowOpacity = settings.getSync("windowOpacity") || 1;
+ipcMain.on("adjustOpacity", (event, { windowId, value }) => {
+  const fileWindow = fileWindows.find((w) => w.id === windowId);
+  if (fileWindow) {
+    fileWindow.window.setOpacity(parseFloat(value));
+  }
+});
 
-  fileWindow = new BrowserWindow({
+function createFileWindow(fileContent, fileExtension) {
+  const fileWindow = new BrowserWindow({
     width: 800,
     height: 600,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
-    opacity: windowOpacity,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      enableRemoteModule: true,
     },
+    resizable: true,
+    minimizable: false,
+    maximizable: false,
   });
+
+  const windowId = Date.now().toString(); // Unique ID for each window
 
   fileWindow.loadFile("fileWindow.html");
+
   fileWindow.webContents.once("did-finish-load", () => {
-    fileWindow.webContents.send("render-file", filePath);
-  });
-
-  const fileExtension = path.extname(filePath).toLowerCase();
-  if (fileExtension === ".pdf") {
-    fileWindow.loadURL(`file://${filePath}`);
-  } else if ([".jpg", ".png", ".gif"].includes(fileExtension)) {
-    fileWindow.loadURL(
-      `data:image/${fileExtension.slice(1)};base64,${fs
-        .readFileSync(filePath)
-        .toString("base64")}`
-    );
-  } else if ([".txt", ".docx"].includes(fileExtension)) {
-    fileWindow.loadFile(filePath);
-  } else {
-    fileWindow.loadURL("about:blank");
-  }
-
-  ipcMain.on("adjust-transparency", (event, value) => {
-    fileWindow.setOpacity(parseFloat(value));
-    settings.setSync("windowOpacity", value);
-  });
-
-  ipcMain.on("move-window", (event, { x, y }) => {
-    fileWindow.setBounds({
-      x,
-      y,
-      width: fileWindow.getBounds().width,
-      height: fileWindow.getBounds().height,
+    fileWindow.webContents.send("render-file", {
+      fileContent,
+      fileExtension,
+      windowId,
     });
   });
 
-  ipcMain.on("close-file-window", () => {
-    fileWindow.close();
+  fileWindow.on("closed", () => {
+    const index = fileWindows.findIndex((w) => w.id === windowId);
+    if (index !== -1) {
+      fileWindows.splice(index, 1);
+    }
   });
-}
 
-// Handle opacity adjustment from the main window
-ipcMain.on("adjustOpacity", (event, value) => {
-  if (fileWindow) {
-    fileWindow.setOpacity(parseFloat(value));
-    settings.setSync("windowOpacity", value);
-  }
-});
+  // Store the window with its unique ID
+  fileWindows.push({ id: windowId, window: fileWindow });
+}

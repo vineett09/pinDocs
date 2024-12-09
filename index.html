@@ -3,35 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transparent File Viewer</title>
+    <title>Main Window</title>
     <meta
       id="csp-meta"
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'nonce-ABC123'"
+      content="default-src 'self'; style-src 'self' 'nonce-ABC123'; script-src 'self' 'nonce-ABC123';"
     />
+    <style nonce="ABC123">
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
-    <h1>Transparent File Viewer</h1>
     <button id="open-file">Open File</button>
-    <label for="opacity-slider">Adjust Opacity:</label>
-    <input
-      type="range"
-      id="opacity-slider"
-      min="0"
-      max="1"
-      step="0.1"
-      value="1"
-    />
     <script nonce="ABC123">
-      const openFileButton = document.getElementById("open-file");
-      openFileButton.addEventListener("click", () => {
+      document.getElementById("open-file").addEventListener("click", () => {
         window.electronAPI.openFile();
-      });
-
-      const slider = document.getElementById("opacity-slider");
-      slider.addEventListener("input", (event) => {
-        const value = event.target.value;
-        window.electronAPI.adjustOpacity(value);
       });
     </script>
   </body>
