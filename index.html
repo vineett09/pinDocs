@@ -13,11 +13,35 @@
       body {
         margin: 0;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif; /* Use a web-safe font */
+        background-color: #f4f4f9;
+      }
+      #open-file {
+        background-color: #6200ea;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, transform 0.3s;
+      }
+      #open-file:hover {
+        background-color: #3700b3;
+      }
+      #open-file:active {
+        transform: translateY(2px);
       }
     </style>
   </head>
   <body>
-    <button id="open-file">Open File</button>
+    <button id="open-file">📂 Open File</button>
     <script nonce="ABC123">
       document.getElementById("open-file").addEventListener("click", () => {
         window.electronAPI.openFile();
