@@ -65,6 +65,46 @@ ipcMain.handle("open-file", async () => {
 
   createFileWindow(fileContent, fileExtension);
 });
+ipcMain.handle("add-note", async () => {
+  createNoteWindow();
+});
+
+function createNoteWindow() {
+  const noteWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      enableRemoteModule: true,
+    },
+    resizable: true,
+    minimizable: false,
+    maximizable: false,
+  });
+
+  const windowId = Date.now().toString(); // Unique ID for each window
+
+  noteWindow.loadFile("noteWindow.html");
+
+  noteWindow.webContents.once("did-finish-load", () => {
+    noteWindow.webContents.send("render-file", {
+      windowId,
+    });
+  });
+
+  noteWindow.on("closed", () => {
+    const index = fileWindows.findIndex((w) => w.id === windowId);
+    if (index !== -1) {
+      fileWindows.splice(index, 1);
+    }
+  });
+
+  fileWindows.push({ id: windowId, window: noteWindow });
+}
 
 ipcMain.on("adjustOpacity", (event, { windowId, value }) => {
   const fileWindow = fileWindows.find((w) => w.id === windowId);

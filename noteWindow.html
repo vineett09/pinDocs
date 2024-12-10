@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notepad</title>
+    <style nonce="ABC123">
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      #frame {
+        width: 100%;
+        height: 30px;
+        background: black;
+        cursor: move;
+        -webkit-app-region: drag; /* Allows dragging in Electron */
+      }
+      #note-content {
+        width: 100%;
+        height: calc(100% - 70px); /* Adjusted for frame and opacity controls */
+        box-sizing: border-box;
+        padding: 10px;
+      }
+      textarea {
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+      #opacity-controls {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+      #opacity-controls label {
+        margin-right: 10px;
+        white-space: nowrap;
+      }
+      #opacity-slider {
+        flex-grow: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="frame"></div>
+    <div id="note-content">
+      <textarea placeholder="Type your notes here..."></textarea>
+    </div>
+    <div id="opacity-controls">
+      <label for="opacity-slider">Opacity:</label>
+      <input
+        type="range"
+        id="opacity-slider"
+        min="0"
+        max="1"
+        step="0.1"
+        value="1"
+      />
+    </div>
+    <script nonce="ABC123">
+      let currentWindowId = null;
+
+      window.electronAPI.renderFile((event, { windowId }) => {
+        currentWindowId = windowId;
+      });
+
+      const slider = document.getElementById("opacity-slider");
+      slider.addEventListener("input", (event) => {
+        const value = event.target.value;
+        if (currentWindowId) {
+          window.electronAPI.adjustOpacity(currentWindowId, value);
+        }
+      });
+    </script>
+  </body>
+</html>

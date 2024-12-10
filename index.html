@@ -20,7 +20,8 @@
         font-family: Arial, sans-serif; /* Use a web-safe font */
         background-color: #f4f4f9;
       }
-      #open-file {
+      #open-file,
+      #add-note {
         background-color: #6200ea;
         color: white;
         border: none;
@@ -31,20 +32,27 @@
         cursor: pointer;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: background-color 0.3s, transform 0.3s;
+        margin: 10px;
       }
-      #open-file:hover {
+      #open-file:hover,
+      #add-note:hover {
         background-color: #3700b3;
       }
-      #open-file:active {
+      #open-file:active,
+      #add-note:active {
         transform: translateY(2px);
       }
     </style>
   </head>
   <body>
     <button id="open-file">📂 Open File</button>
+    <button id="add-note">📝 Add Note</button>
     <script nonce="ABC123">
       document.getElementById("open-file").addEventListener("click", () => {
         window.electronAPI.openFile();
+      });
+      document.getElementById("add-note").addEventListener("click", () => {
+        window.electronAPI.addNote();
       });
     </script>
   </body>
