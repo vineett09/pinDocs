@@ -41,7 +41,7 @@ ipcMain.handle("open-file", async () => {
     properties: ["openFile"],
     filters: [
       { name: "Images", extensions: ["jpg", "png", "gif"] },
-      { name: "Documents", extensions: ["pdf", "docx", "txt"] },
+      { name: "Documents", extensions: ["pdf", "txt"] },
     ],
   });
 
@@ -152,3 +152,13 @@ function createFileWindow(fileContent, fileExtension) {
   // Store the window with its unique ID
   fileWindows.push({ id: windowId, window: fileWindow });
 }
+
+// Close a specific window
+ipcMain.on("close-specific-window", (event, windowId) => {
+  const windowToClose = fileWindows.find((w) => w.id === windowId);
+  if (windowToClose) {
+    windowToClose.window.close();
+    // Remove the window from the fileWindows array
+    fileWindows = fileWindows.filter((w) => w.id !== windowId);
+  }
+});

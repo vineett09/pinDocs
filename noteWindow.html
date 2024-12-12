@@ -14,11 +14,33 @@
         overflow: hidden;
       }
       #frame {
+        position: relative;
         width: 100%;
         height: 30px;
         background: black;
         cursor: move;
-        -webkit-app-region: drag; /* Allows dragging in Electron */
+        -webkit-app-region: drag;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 10px;
+      }
+      #close-button {
+        background-color: red;
+        margin-right: 5px;
+        color: white;
+        border: none;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 12px;
+        padding: 0;
+        z-index: 1000;
+        -webkit-app-region: no-drag;
       }
       #note-content {
         width: 100%;
@@ -52,7 +74,7 @@
     </style>
   </head>
   <body>
-    <div id="frame"></div>
+    <div id="frame"><button id="close-button">✖</button></div>
     <div id="note-content">
       <textarea placeholder="Type your notes here..."></textarea>
     </div>
@@ -69,6 +91,14 @@
     </div>
     <script nonce="ABC123">
       let currentWindowId = null;
+
+      // Close button functionality
+      document.getElementById("close-button").addEventListener("click", () => {
+        if (currentWindowId) {
+          // Send a message to close this specific window
+          window.electronAPI.closeWindow(currentWindowId);
+        }
+      });
 
       window.electronAPI.renderFile((event, { windowId }) => {
         currentWindowId = windowId;
