@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-  "start": "electron .",
-  "start-dev": "nodemon --watch . --exec \"electron .\""
-},
-
+    "start": "electron .",
+    "start-dev": "nodemon --watch . --exec \"electron .\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -17,8 +16,6 @@
   },
   "dependencies": {
     "electron-settings": "^4.0.4",
-    "mammoth": "^1.8.0",
-    "pptxgenjs": "^3.12.0",
-    "xlsx": "^0.18.5"
+    "mammoth": "^1.8.0"
   }
 }
