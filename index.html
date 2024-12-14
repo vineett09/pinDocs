@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Main Window</title>
+    <title>PinDocs</title>
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self';"
@@ -12,8 +12,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <button id="open-file">📂 Open File</button>
-    <button id="add-note">📝 Add Note</button>
+    <div class="content-container">
+      <h1>PinDocs</h1>
+      <p>Documents and Notes That Stay On Top</p>
+      <!-- Heading above the buttons -->
+      <div class="button-container">
+        <button id="open-file">📂 Open File</button>
+        <button id="add-note">📝 Add Note</button>
+      </div>
+    </div>
+
     <script src="renderer.js"></script>
   </body>
 </html>
