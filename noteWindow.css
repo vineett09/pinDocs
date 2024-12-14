@@ -1,0 +1,66 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#frame {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background: black;
+  cursor: move;
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+#close-button {
+  background-color: red;
+  margin-right: 5px;
+  color: white;
+  border: none;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 0;
+  z-index: 1000;
+  -webkit-app-region: no-drag;
+}
+#note-content {
+  width: 100%;
+  height: calc(100% - 70px);
+  box-sizing: border-box;
+  padding: 10px;
+}
+textarea {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+#opacity-controls {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+#opacity-controls label {
+  margin-right: 10px;
+  white-space: nowrap;
+}
+#opacity-slider {
+  flex-grow: 1;
+}

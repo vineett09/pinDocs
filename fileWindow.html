@@ -4,81 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>File Viewer</title>
-    <style nonce="ABC123">
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-      #frame {
-        position: relative;
-        width: 100%;
-        height: 30px;
-        background: black;
-        cursor: move;
-        -webkit-app-region: drag;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        padding-right: 10px;
-      }
-      #file-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: calc(100% - 70px); /* Adjusted for frame and opacity controls */
-        box-sizing: border-box;
-      }
-      #file-content img,
-      #file-content iframe,
-      #file-content pre {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        width: 100%;
-        height: 100%;
-      }
-      #opacity-controls {
-        width: 100%;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: black;
-        padding: 0 10px;
-        box-sizing: border-box;
-      }
-      #opacity-controls label {
-        margin-right: 10px;
-        white-space: nowrap;
-        color: white;
-      }
-      #opacity-slider {
-        flex-grow: 1;
-      }
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;"
+    />
 
-      #close-button {
-        background-color: red;
-        margin-right: 5px;
-        color: white;
-        border: none;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border-radius: 50%;
-        font-size: 12px;
-        padding: 0;
-        z-index: 1000;
-        -webkit-app-region: no-drag; /* Ensure button is clickable */
-      }
-    </style>
+    <link rel="stylesheet" href="fileWindow.css" />
   </head>
   <body>
     <div id="frame"><button id="close-button">✖</button></div>
@@ -94,58 +25,6 @@
         value="1"
       />
     </div>
-    <script nonce="ABC123">
-      let currentWindowId = null;
-
-      // Close button functionality
-      document.getElementById("close-button").addEventListener("click", () => {
-        if (currentWindowId) {
-          // Send a message to close this specific window
-          window.electronAPI.closeWindow(currentWindowId);
-        }
-      });
-
-      window.electronAPI.renderFile(
-        (event, { fileContent, fileExtension, windowId }) => {
-          currentWindowId = windowId;
-          console.log("Rendering file:", {
-            fileContent,
-            fileExtension,
-            windowId,
-          });
-          const contentDiv = document.getElementById("file-content");
-
-          if (fileExtension === ".pdf") {
-            contentDiv.innerHTML = `
-                    <iframe 
-                        src="${fileContent}" 
-                        style="width:100%; height:100%; border:none;"
-                        allowfullscreen
-                    ></iframe>
-                `;
-          } else if ([".jpg", ".png", ".gif"].includes(fileExtension)) {
-            const img = new Image();
-            img.onload = function () {
-              contentDiv.innerHTML = "";
-              contentDiv.appendChild(img);
-            };
-            img.src = fileContent;
-          } else if (fileExtension === ".txt") {
-            contentDiv.innerHTML = `<pre style="margin:0; white-space:pre-wrap; word-wrap:break-word;">${fileContent}</pre>`;
-          } else {
-            contentDiv.innerHTML = "<h1>Unsupported file type</h1>";
-          }
-        }
-      );
-
-      // Opacity slider logic
-      const slider = document.getElementById("opacity-slider");
-      slider.addEventListener("input", (event) => {
-        const value = event.target.value;
-        if (currentWindowId) {
-          window.electronAPI.adjustOpacity(currentWindowId, value);
-        }
-      });
-    </script>
+    <script src="fileWindow.js"></script>
   </body>
 </html>

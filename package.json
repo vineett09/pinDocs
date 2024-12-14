@@ -12,10 +12,12 @@
   "description": "",
   "devDependencies": {
     "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
     "electron-settings": "^4.0.4",
-    "mammoth": "^1.8.0"
+    "mammoth": "^1.8.0",
+    "uuid": "^11.0.3"
   }
 }
