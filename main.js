@@ -114,11 +114,13 @@ ipcMain.on("adjustOpacity", (event, { windowId, value }) => {
 });
 
 function createFileWindow(fileContent, fileExtension) {
+  const isTextFile = fileExtension === ".txt";
+
   const fileWindow = new BrowserWindow({
     width: 800,
     height: 600,
     frame: false,
-    transparent: true,
+    transparent: !isTextFile, // Disable transparency for text files
     alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
