@@ -1,13 +1,14 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
-
+const { createCustomMenu } = require("./menu");
 // Store multiple file windows
 let mainWindow;
 let fileWindows = [];
 
 app.whenReady().then(() => {
   createMainWindow();
+  createCustomMenu();
 });
 
 function createMainWindow() {
