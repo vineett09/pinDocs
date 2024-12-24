@@ -108,7 +108,7 @@ function createNoteWindow() {
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
         contextIsolation: true,
-        enableRemoteModule: true,
+        enableRemoteModule: false,
       },
       resizable: true,
       minimizable: false,
@@ -171,7 +171,7 @@ function createFileWindow(fileContent, fileExtension) {
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
         contextIsolation: true,
-        enableRemoteModule: true,
+        enableRemoteModule: false,
       },
       resizable: true,
       minimizable: false,
