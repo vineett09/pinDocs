@@ -4,7 +4,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "start-dev": "nodemon --watch . --exec \"electron .\""
+    "start-dev": "nodemon --watch . --exec \"electron .\"",
+    "build": "electron-builder"
   },
   "keywords": [],
   "author": "",
@@ -16,8 +17,26 @@
     "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
+    "7zip-bin": "^5.2.0",
     "electron-settings": "^4.0.4",
     "mammoth": "^1.8.0",
     "uuid": "^11.0.3"
+  },
+  "build": {
+    "appId": "com.pindocs.app",
+    "asar": false,
+    "productName": "PinDocs",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*",
+      "!dist/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
   }
 }
