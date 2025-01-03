@@ -13,3 +13,4 @@ contextBridge.exposeInMainWorld("electronAPI", {
   closeWindow: (windowId) =>
     ipcRenderer.send("close-specific-window", windowId),
 });
+z;

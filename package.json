@@ -2,6 +2,7 @@
   "name": "pindocs",
   "version": "1.0.0",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "start-dev": "nodemon --watch . --exec \"electron .\"",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "7zip-bin": "^5.2.0",
+    "active-win": "^9.0.0",
     "electron-settings": "^4.0.4",
     "mammoth": "^1.8.0",
     "uuid": "^11.0.3"

@@ -1,8 +1,13 @@
-const { app, BrowserWindow, dialog, ipcMain } = require("electron");
-const path = require("path");
-const fs = require("fs");
-const { createCustomMenu } = require("./menu");
-// Store multiple file windows
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { createCustomMenu } from "./menu.js";
+
+// Convert import.meta.url to a path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 let mainWindow;
 let fileWindows = [];
 
@@ -44,7 +49,7 @@ const logError = (error) => {
   const errorMessage = `[${new Date().toISOString()}] ${error.message}\n${
     error.stack
   }\n\n`;
-  fs.appendFileSync(errorLogPath, errorMessage); // Log errors to a file
+  fs.appendFileSync(errorLogPath, errorMessage);
 };
 
 ipcMain.handle("open-file", async () => {
@@ -77,7 +82,7 @@ ipcMain.handle("open-file", async () => {
 
     createFileWindow(fileContent, fileExtension);
   } catch (error) {
-    logError(error); // Log error to file
+    logError(error);
     dialog.showErrorBox(
       "File Open Error",
       "There was an error opening the file. Please try again."
@@ -89,7 +94,7 @@ ipcMain.handle("add-note", async () => {
   try {
     createNoteWindow();
   } catch (error) {
-    logError(error); // Log error to file
+    logError(error);
     dialog.showErrorBox(
       "Note Creation Error",
       "There was an error creating a new note. Please try again."
@@ -115,7 +120,7 @@ function createNoteWindow() {
       maximizable: false,
     });
 
-    const windowId = Date.now().toString(); // Unique ID for each window
+    const windowId = Date.now().toString();
 
     noteWindow.loadFile("noteWindow.html");
 
@@ -134,7 +139,7 @@ function createNoteWindow() {
 
     fileWindows.push({ id: windowId, window: noteWindow });
   } catch (error) {
-    logError(error); // Log error to file
+    logError(error);
     dialog.showErrorBox(
       "Note Window Error",
       "There was an error creating the note window. Please try again."
@@ -150,7 +155,7 @@ ipcMain.on("adjustOpacity", (event, { windowId, value }) => {
     }
     fileWindow.window.setOpacity(parseFloat(value));
   } catch (error) {
-    logError(error); // Log error to file
+    logError(error);
     dialog.showErrorBox(
       "Opacity Adjustment Error",
       "There was an error adjusting the window opacity. Please try again."
@@ -166,7 +171,7 @@ function createFileWindow(fileContent, fileExtension) {
       width: 800,
       height: 600,
       frame: false,
-      transparent: !isTextFile, // Disable transparency for text files
+      transparent: !isTextFile,
       alwaysOnTop: true,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
@@ -178,7 +183,7 @@ function createFileWindow(fileContent, fileExtension) {
       maximizable: false,
     });
 
-    const windowId = Date.now().toString(); // Unique ID for each window
+    const windowId = Date.now().toString();
 
     fileWindow.loadFile("fileWindow.html");
 
@@ -199,7 +204,7 @@ function createFileWindow(fileContent, fileExtension) {
 
     fileWindows.push({ id: windowId, window: fileWindow });
   } catch (error) {
-    logError(error); // Log error to file
+    logError(error);
     dialog.showErrorBox(
       "Window Creation Error",
       "There was an error creating the file window. Please try again."
@@ -207,12 +212,10 @@ function createFileWindow(fileContent, fileExtension) {
   }
 }
 
-// Close a specific window
 ipcMain.on("close-specific-window", (event, windowId) => {
   const windowToClose = fileWindows.find((w) => w.id === windowId);
   if (windowToClose) {
     windowToClose.window.close();
-    // Remove the window from the fileWindows array
     fileWindows = fileWindows.filter((w) => w.id !== windowId);
   }
 });

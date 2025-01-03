@@ -1,70 +1,34 @@
-const { Menu } = require("electron");
+import { Menu } from "electron";
 
-function createCustomMenu() {
-  // Default menu template
+export function createCustomMenu() {
   const defaultMenu = Menu.buildFromTemplate([
     {
       label: "Edit",
       submenu: [
-        {
-          label: "Undo",
-          role: "undo",
-        },
-        {
-          label: "Redo",
-          role: "redo",
-        },
+        { label: "Undo", role: "undo" },
+        { label: "Redo", role: "redo" },
         { type: "separator" },
-        {
-          label: "Cut",
-          role: "cut",
-        },
-        {
-          label: "Copy",
-          role: "copy",
-        },
-        {
-          label: "Paste",
-          role: "paste",
-        },
-        {
-          label: "Select All",
-          role: "selectAll",
-        },
+        { label: "Cut", role: "cut" },
+        { label: "Copy", role: "copy" },
+        { label: "Paste", role: "paste" },
+        { label: "Select All", role: "selectAll" },
       ],
     },
     {
       label: "View",
       submenu: [
-        {
-          label: "Reload",
-          role: "reload",
-        },
-        /*{
-          label: "Toggle DevTools",
-          role: "toggleDevTools",
-        },*/
+        { label: "Reload", role: "reload" },
+        { label: "Toggle DevTools", role: "toggleDevTools" },
       ],
     },
     {
       label: "Window",
       submenu: [
-        {
-          label: "Minimize",
-          role: "minimize",
-        },
-        {
-          label: "Close",
-          role: "close",
-        },
+        { label: "Minimize", role: "minimize" },
+        { label: "Close", role: "close" },
       ],
     },
   ]);
 
-  // Set the custom menu
   Menu.setApplicationMenu(defaultMenu);
 }
-
-module.exports = {
-  createCustomMenu,
-};
